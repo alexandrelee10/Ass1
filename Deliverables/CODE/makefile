@@ -1,9 +1,18 @@
-CC=gcc
-CFLAGS= -w -lm 
-OBJ = rns.c rng.c
+CC = gcc
+CFLAGS = -Wall -Wextra -lm
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+PROGRAMS = rng rns
 
-convert: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
+all: $(PROGRAMS)
+
+rng: rng.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+rns: rns.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f *.o $(PROGRAMS)

@@ -107,8 +107,8 @@ int main() {
     }
 
     // Write column headers to the file and console for clarity
-    fprintf(f, "Continuous\tNormal\tTruncInt\tTruncReal\n"); // File header
-    printf("\n%-12s%-12s%-12s%-12s\n", "Continuous", "Normal", "TruncInt", "TruncReal");
+    fprintf(f, "Continuous\tNormal\tTruncInt\tTruncReal\tMean:\tStandard Deviation"); // File header
+    printf("\n%-12s%-12s%-12s%-12s%-12s%-12s\n", "Continuous", "Normal", "TruncInt", "TruncReal", "StandardDev", "Mean");
     printf("-------------------------------------------------------\n");
 
     for (int i = 0; i < N; i++) {
@@ -155,6 +155,62 @@ double generate_truncated_normal_real(double mu, double sigma, double min, doubl
         value = nrand() * sigma + mu;
     } while (value < min || value > max);
     return value;
+}
+
+// Function to calculate mean and standard deviation
+void calculate_mean_and_stddev(const char *filename, int N) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file for reading");
+        exit(EXIT_FAILURE);
+    }
+    // Step 1: Read the numbers into an array
+    double *numbers = (double *)malloc(N * sizeof(double));
+    if (!numbers) {
+        perror("Memory allocation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < N; i++) {
+        if (fscanf(file, "%lf", &numbers[i]) != 1) {
+            perror("Error reading number from file");
+            free(numbers);
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
+    }
+    // Step 2: Calculate the sum
+    double sum = 0;
+    for (int i = 0; i < N; i++) {
+        sum += numbers[i];
+    }
+    // Step 3: Calculate the mean
+    double mean = sum / N;
+    // Step 4: Calculate the sum of squares for standard deviation
+    double sum_of_squares = 0;
+    for (int i = 0; i < N; i++) {
+        sum_of_squares += pow(numbers[i] - mean, 2);
+    }
+    // Step 5: Calculate the standard deviation
+    double stddev = sqrt(sum_of_squares / (N - 1));
+    // Step 6: Print the results (or write to a statistics file)
+    FILE *stats_file = fopen("statistics.txt", "a");  // Append mode to write multiple results
+    if (!stats_file) {
+        perror("Error opening statistics file");
+        free(numbers);
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
+    printf("Statistics file opened correctly"); // Debugging 
+    fprintf(stats_file, "File: %s\n", filename);
+    fprintf(stats_file, "Mean: %.6f\n", mean);
+    fprintf(stats_file, "Standard Deviation: %.6f\n", stddev);
+    fprintf(stats_file, "--------------------------------\n");
+
+    // Clean up
+    free(numbers);
+    fclose(file);
+    fclose(stats_file);
 }
 
 // Write generated random values to the file
