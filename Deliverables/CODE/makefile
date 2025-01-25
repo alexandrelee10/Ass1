@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I. -w -lm 
+CFLAGS= -w -lm 
 OBJ = rns.c rng.c
 
 %.o: %.c $(DEPS)

@@ -21,9 +21,10 @@
  * - Randomly generated values displayed on the console.
  * - A file "output.txt" containing generated sequences in tabular form.
  * 
- * Usage:
- * - Compile: gcc random_number_generator.c -lm -o random_gen
- * - Execute: ./random_gen
+ * Usage: (Updated Since I Changed The File Name)
+ * - Compile: gcc rng.c -lm -o r
+ * - Execute: ./r
+ * - I used "r" because it is shorter to call in the executable but you can easily change it.
  * 
  * Experimentation Instructions:
  * 1. Change `m`, `M`, `mu`, `sigma`, and ranges during input to experiment with 
