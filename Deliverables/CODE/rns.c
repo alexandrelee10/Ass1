@@ -1,3 +1,11 @@
+/* Instructions:
+ * ========================================================================================
+ * Usage: 
+ * - Compile: gcc rns.c -lm -o r
+ * - Execute: ./r
+ * - I used "r" because it is shorter to call in the executable but you can easily change it.
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
