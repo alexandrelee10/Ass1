@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -lm
+CFLAGS = -Wall -Wextra
 
 PROGRAMS = rng rns
 

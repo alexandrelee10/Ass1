@@ -32,7 +32,6 @@
  * 2. Modify the number of sequences written to the file for larger/smaller datasets.
  * 
  *****************************************************************************/
-
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -42,20 +41,28 @@
 #define frand() (rand() / (double)RAND_MAX) 
 
 // Macro for generating random real numbers from a normal distribution
-// Uses the Box-Muller transform for normal random number generation
-#define nrand() (sqrt(-2 * log(frand())) * cos(2 * M_PI * frand()))
+#define nrand() (sqrt(-2 * log(frand())) * cos(2 * 3.141592653589793238 * frand()))
 
 // Function Prototypes
 // Generate a random real number uniformly distributed in [m, M]
 double generate_uniform_real(double m, double M);
+// Generate a random integer uniformly distributed in [m, M]
+double generate_uniform_int(double m, double M);
 // Generate a random real number from a normal distribution
 double generate_normal(double mu, double sigma);
+// Generate a random real integer number from a normal distribution
+double generate_normal_int(double mu, double sigma);
 // Generate a random integer from a truncated normal distribution
 int generate_truncated_normal_int(double mu, double sigma, int min, int max);
 // Generate a random real number from a truncated normal distribution
 double generate_truncated_normal_real(double mu, double sigma, double min, double max);
+
+// Calculate the mean of an array of numbers
+double calculate_mean(double *values, int N);
+// Calculate the standard deviation of an array of numbers
+double calculate_stddev(double *values, int N);
 // Write generated random values to the file
-void write_to_file(FILE *f, double s2, double s3);
+void write_to_file(FILE *f, double s2, double s3, int s4, double s5);
 // Validate user inputs for correctness
 void validate_input(double m, double M, double sigma, int N);
 
@@ -106,25 +113,80 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    // Write column headers to the file and console for clarity
-    fprintf(f, "Continuous\tNormal\tTruncInt\tTruncReal\tMean:\tStandard Deviation"); // File header
-    printf("\n%-12s%-12s%-12s%-12s%-12s%-12s\n", "Continuous", "Normal", "TruncInt", "TruncReal", "StandardDev", "Mean");
-    printf("-------------------------------------------------------\n");
+    // Arrays to store values for calculating mean and stddev for each distribution
+    double *uniform_real_vals = (double *)malloc(N * sizeof(double));
+    double *normal_real_vals = (double *)malloc(N * sizeof(double));
+    double *uniform_int_vals = (double *)malloc(N * sizeof(double));
+    double *normal_int_vals = (double*)malloc(N * sizeof(double));
+    int *truncated_normal_int_vals = (int *)malloc(N * sizeof(int));
+    double *truncated_normal_real_vals = (double *)malloc(N * sizeof(double));
 
+    // Write column headers to the file and console for clarity
+    fprintf(f, "Continuous Real\tNormal Real\tUniform Int\tNormal Int\tTrunc Int\tTrunc Real\n");
+    printf("\n%-20s%-20s%-20s%-20s%-20s%-20s\n", "Continuous Real", "Normal Real", "Uniform Int", "Normal Int", "Trunc Int", "Trunc Real");
+    printf("--------------------------------------------------------------------------------------------------------------------\n");
+
+    // Generate random values and store them in arrays for mean and stddev calculation
     for (int i = 0; i < N; i++) {
-        // Generate random values for each distribution
         double s2 = generate_uniform_real(m, M);
         double s3 = generate_normal(mu, sigma);
-        int s4 = generate_truncated_normal_int(mu, sigma, min_int, max_int);
-        double s5 = generate_truncated_normal_real(mu, sigma, min_real, max_real);
+        int s4 = generate_uniform_int(min_int, max_int);
+        int s1 = generate_normal_int(mu, sigma);
+        int s5 = generate_truncated_normal_int(mu, sigma, min_int, max_int);
+        double s6 = generate_truncated_normal_real(mu, sigma, min_real, max_real);
 
+        // Store the values for later mean and stddev calculation
+        normal_int_vals[i] = s1;
+        uniform_real_vals[i] = s2;
+        normal_real_vals[i] = s3;
+        uniform_int_vals[i] = s4;
+        truncated_normal_int_vals[i] = s5;
+        truncated_normal_real_vals[i] = s6;
+        
         // Write the values to the file and print to the console
-        fprintf(f, "%.5f\t%.5f\t%d\t%.5f\n", s2, s3, s4, s5);
-        printf("%-12.5f%-12.5f%-12d%-12.5f\n", s2, s3, s4, s5);
+        fprintf(f, "%.5f\t%.5f\t%d\t%d\t%.5f\t%d\n", s2, s3, s4, s5, s6, s5);
+        printf("%-20.5f%-20.5f%-20d%-20d%-20.5f%-20d\n", s2, s3, s4, s5, s6, s5);
     }
 
+    // Calculate and print the mean and standard deviation for each distribution
+    double mean_uniform_real = calculate_mean(uniform_real_vals, N);
+    double stddev_uniform_real = calculate_stddev(uniform_real_vals, N);
+    double mean_normal_real = calculate_mean(normal_real_vals, N);
+    double stddev_normal_real = calculate_stddev(normal_real_vals, N);
+    double mean_normal_int = calculate_mean((double*)normal_int_vals, N);
+    double stddev_normal_int = calculate_stddev((double*)normal_int_vals, N);
+    double mean_uniform_int = calculate_mean((double *)uniform_int_vals, N);  // Cast to double for consistency
+    double stddev_uniform_int = calculate_stddev((double *)uniform_int_vals, N);
+    double mean_truncated_normal_int = calculate_mean((double *)truncated_normal_int_vals, N);
+    double stddev_truncated_normal_int = calculate_stddev((double *)truncated_normal_int_vals, N);
+    double mean_truncated_normal_real = calculate_mean(truncated_normal_real_vals, N);
+    double stddev_truncated_normal_real = calculate_stddev(truncated_normal_real_vals, N);
+
+    // Print results for each distribution
+    printf("\n\nMean and Standard Deviation for each distribution:\n-------------------------------------------------------------\n");
+    printf("Uniform Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_uniform_real, stddev_uniform_real);
+    printf("Normal Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_normal_real, stddev_normal_real);
+    printf("Uniform Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_uniform_int, stddev_uniform_int);
+    printf("Normal Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_normal_int, stddev_normal_int);
+    printf("Truncated Normal Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_truncated_normal_int, stddev_truncated_normal_int);
+    printf("Truncated Normal Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_truncated_normal_real, stddev_truncated_normal_real);
+
+    // Output the mean and stddev for each distribution to the file
+    fprintf(f, "\n\nMean and Standard Deviation for each distribution:\n-------------------------------------------------------------\n");
+    fprintf(f, "Uniform Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_uniform_real, stddev_uniform_real);
+    fprintf(f, "Normal Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_normal_real, stddev_normal_real);
+    fprintf(f, "Uniform Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_uniform_int, stddev_uniform_int);
+    fprintf(f, "Normal Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_normal_int, stddev_normal_int);
+    fprintf(f, "Truncated Normal Int:\nMean = %.5f\nStddev = %.5f\n\n", mean_truncated_normal_int, stddev_truncated_normal_int);
+    fprintf(f, "Truncated Normal Real:\nMean = %.5f\nStddev = %.5f\n\n", mean_truncated_normal_real, stddev_truncated_normal_real);
+
     fclose(f); // Close the file after writing
-    printf("Random sequences have been written to %s\n", filename);
+    free(uniform_real_vals);
+    free(normal_real_vals);
+    free(uniform_int_vals);
+    free(normal_int_vals);
+    free(truncated_normal_int_vals);
+    free(truncated_normal_real_vals);
 
     return 0;
 }
@@ -134,11 +196,22 @@ double generate_uniform_real(double m, double M) {
     return m + (M - m) * frand();
 }
 
+// Generate a random integer uniformly distributed in [m, M]
+double generate_uniform_int(double m, double M) {
+    int rand_val = m + (int)(frand() * (M - m + 1));  // Ensures the integer is within range
+return rand_val;
+//printf("Uniform rand_val: %.5d\n", rand_val);  // Debugging output
+}
 // Generate a random real number from a normal distribution
 double generate_normal(double mu, double sigma) {
     return nrand() * sigma + mu;
 }
-
+// Generate a random real integer from a normal distribution
+double generate_normal_int(double m, double sigma) {
+    double norm_val = generate_normal(m, sigma);
+    //printf("Normal rand_val: %.5f\n", norm_val);  // Debugging output
+    return (int)round(norm_val);
+}
 // Generate a random integer from a truncated normal distribution
 int generate_truncated_normal_int(double mu, double sigma, int min, int max) {
     int value;
@@ -157,69 +230,23 @@ double generate_truncated_normal_real(double mu, double sigma, double min, doubl
     return value;
 }
 
-// Function to calculate mean and standard deviation
-void calculate_mean_and_stddev(const char *filename, int N) {
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        perror("Error opening file for reading");
-        exit(EXIT_FAILURE);
-    }
-    // Step 1: Read the numbers into an array
-    double *numbers = (double *)malloc(N * sizeof(double));
-    if (!numbers) {
-        perror("Memory allocation failed");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < N; i++) {
-        if (fscanf(file, "%lf", &numbers[i]) != 1) {
-            perror("Error reading number from file");
-            free(numbers);
-            fclose(file);
-            exit(EXIT_FAILURE);
-        }
-    }
-    // Step 2: Calculate the sum
+// Function to calculate mean
+double calculate_mean(double *values, int N) {
     double sum = 0;
     for (int i = 0; i < N; i++) {
-        sum += numbers[i];
+        sum += values[i];
     }
-    // Step 3: Calculate the mean
-    double mean = sum / N;
-    // Step 4: Calculate the sum of squares for standard deviation
-    double sum_of_squares = 0;
-    for (int i = 0; i < N; i++) {
-        sum_of_squares += pow(numbers[i] - mean, 2);
-    }
-    // Step 5: Calculate the standard deviation
-    double stddev = sqrt(sum_of_squares / (N - 1));
-    // Step 6: Print the results (or write to a statistics file)
-    FILE *stats_file = fopen("statistics.txt", "a");  // Append mode to write multiple results
-    if (!stats_file) {
-        perror("Error opening statistics file");
-        free(numbers);
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
-    printf("Statistics file opened correctly"); // Debugging 
-    fprintf(stats_file, "File: %s\n", filename);
-    fprintf(stats_file, "Mean: %.6f\n", mean);
-    fprintf(stats_file, "Standard Deviation: %.6f\n", stddev);
-    fprintf(stats_file, "--------------------------------\n");
-
-    // Clean up
-    free(numbers);
-    fclose(file);
-    fclose(stats_file);
+    return sum / N;
 }
 
-// Write generated random values to the file
-void write_to_file(FILE *f, double s2, double s3) {
-    if (fprintf(f, "%.5f\t%.5f\n", s2, s3) < 0) {
-        fprintf(stderr, "Error: Failed to write to file.\n");
-        fclose(f);
-        exit(EXIT_FAILURE);
+// Function to calculate standard deviation
+double calculate_stddev(double *values, int N) {
+    double mean = calculate_mean(values, N);
+    double sum_of_squares = 0;
+    for (int i = 0; i < N; i++) {
+        sum_of_squares += pow(values[i] - mean, 2);
     }
+    return sqrt(sum_of_squares / (N - 1));
 }
 
 // Validate user inputs for correctness

@@ -45,20 +45,20 @@ int main()
         snprintf(filepath, sizeof(filepath), "%s/uniform_integers.txt", subfolders[i]);
         generate_random_numbers_to_file(filepath, 1, m, M, mu, sigma, N);
 
-        snprintf(filepath, sizeof(filepath), "%s/uniform_real_numbers.txt", subfolders[i]);
+        snprintf(filepath, sizeof(filepath), "%s/uniform_real.txt", subfolders[i]);
         generate_random_numbers_to_file(filepath, 2, m, M, mu, sigma, N);
 
-        snprintf(filepath, sizeof(filepath), "%s/normally_distributed_integers.txt",subfolders[i]);
+        snprintf(filepath, sizeof(filepath), "%s/normal_real.txt", subfolders[i]);
+        generate_random_numbers_to_file(filepath, 3, m, M, mu, sigma, N);
+
+        snprintf(filepath, sizeof(filepath), "%s/normal_integer.txt",subfolders[i]);
         generate_random_numbers_to_file(filepath, 1, m, M, mu, sigma, N);
         
-        snprintf(filepath, sizeof(filepath), "%s/normal_distributed_real_numbers.txt", subfolders[i]);
+        snprintf(filepath, sizeof(filepath), "%s/truncated_normal_real.txt", subfolders[i]);
         generate_random_numbers_to_file(filepath, 3, m, M, mu, sigma, N);
-
-        snprintf(filepath, sizeof(filepath), "%s/truncated_normal_integers.txt", subfolders[i]);
+        
+        snprintf(filepath, sizeof(filepath), "%s/truncated_normal_integer.txt", subfolders[i]);
         generate_random_numbers_to_file(filepath, 2, m, M, mu, sigma, N);
-
-        snprintf(filepath, sizeof(filepath), "%s/truncated_normal_real_numbers.txt", subfolders[i]);
-        generate_random_numbers_to_file(filepath, 3, m, M, mu, sigma, N);
     }
     return 0;
 }
