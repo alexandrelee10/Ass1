@@ -1,8 +1,8 @@
 1. Include team members details( Full Name, PID, FIU email).
-Kevin Tran, 6441265, ktran030@fiu.edu
-Alexandre Lee, 6425788, alee136@fiu.edu
-Kelvin Calvoo, 6451725, kcalv015@fiu.edu
-Tortrong Yang, 6447079, tyang019@fiu.edu
+(RVC) Kevin Tran, 6441265, ktran030@fiu.edu
+(RVC) Alexandre Lee, 6425788, alee136@fiu.edu
+(RVC) Kelvin Calvoo, 6451725, kcalv015@fiu.edu
+(RVC) Tortrong Yang, 6447079, tyang019@fiu.edu
 
 2. Include corresponding member details.
 Kevin Tran created functions that were used to produce data files in task 1 for steps 1, 2, and 3. Alexandre also created functions that were used to produce data files for task 1 for steps 4, 5, and 6. 
