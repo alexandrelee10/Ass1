@@ -1,8 +1,7 @@
 /* Instructions:
  * ========================================================================================
- * Usage: 
- * - Compile: gcc rns.c -lm -o r
- * - Execute: ./r
+ * Usage:
+ * In terminal type "make". Then after use "/.rns" to run this portion of the code. 
  * - I used "r" because it is shorter to call in the executable but you can easily change it.
  */
 

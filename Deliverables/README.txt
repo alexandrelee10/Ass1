@@ -1,5 +1,5 @@
 1. Include team members details( Full Name, PID, FIU email).
-Kevin Tran
+Kevin Tran, 6441265, ktran030@fiu.edu
 Alexandre Lee, 6425788, alee136@fiu.edu
 Kelvin Calvoo, 6451725, kcalv015@fiu.edu
 Tortrong Yang, 6447079, tyang019@fiu.edu
