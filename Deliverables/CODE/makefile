@@ -1,14 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -Wextra
 
-PROGRAMS = rng rns
+PROGRAMS = scheduler
 
 all: $(PROGRAMS)
 
-rng: rng.o
-	$(CC) $(CFLAGS) -o $@ $^
-
-rns: rns.o
+rng: scheduler.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 %.o: %.c
